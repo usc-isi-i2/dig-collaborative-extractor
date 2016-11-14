@@ -3,9 +3,6 @@ import json
 from copy import copy
 from digExtractor.extractor import Extractor
 
-
-from math import sqrt
-
 class collaborative_extractor(Extractor):
     def __init__(self, prior_dict):
         self.renamed_input_fields = 'phone'

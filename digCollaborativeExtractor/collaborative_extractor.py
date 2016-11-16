@@ -62,11 +62,11 @@ class collaborative_extractor(Extractor):
         res = sorted([{'name': xx[0], 'probability': float(xx[1])/sum_count} for xx in aggregated.items()],
                                         key=lambda x: x['probability'], reverse=True)
         res = [x['name'] for x in res]
-        print(res)
+        # print(res)
         return res
 
     def extract(self, doc):
-        print doc
+        # print doc
         if self.renamed_input_fields in doc:
             if self.extraction_field == 'city':
                 if type(doc[self.renamed_input_fields]) is list:
@@ -115,14 +115,15 @@ class voting_country_predictor(Extractor):
         res = sorted(all_countries.items(), key=lambda x: x[1], reverse=True)
         if len(res) == 0:
             return None
-        return {'name': res[0][0],
-                'probability': (float(res[0][1]) / float(sum(all_countries.values()))),
-                'cities': info,
-                'count': res[0][1]
-                }
+        # return {'name': res[0][0],
+        #         'probability': (float(res[0][1]) / float(sum(all_countries.values()))),
+        #         'cities': info,
+        #         'count': res[0][1]
+        #         }
+        return res[0][0]
 
     def extract(self, doc):
-        print 'doc is: ' + str(doc)
+        # print 'doc is: ' + str(doc)
         if type(self.renamed_input_fields) is list:
             input_fields = self.renamed_input_fields
         else:
@@ -136,7 +137,7 @@ class voting_country_predictor(Extractor):
                     else:
                         for xx in doc[f]:
                             input_arr.append(xx)
-            print(input_arr)
+            # print(input_arr)
             return self.pred_country(input_arr)
         else:
             return None

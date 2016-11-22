@@ -100,12 +100,21 @@ class voting_country_predictor(Extractor):
         self.metadata = metadata
         return self
 
-    def pred_country(self, info):
+    def pred_country(self, cities=[], states=[]):
         # try using phone
         all_countries = {}
-        for city in info:
+        for city in cities:
             if city in self.city2country:
                 countries = self.city2country[city]
+                for country in countries:
+                    if country in all_countries:
+                        all_countries[country] += 1
+                    else:
+                        all_countries[country] = 1
+
+        for state in states:
+            if state in self.state2country:
+                countries = self.state2country[state]
                 for country in countries:
                     if country in all_countries:
                         all_countries[country] += 1
@@ -124,23 +133,23 @@ class voting_country_predictor(Extractor):
 
     def extract(self, doc):
         # print 'doc is: ' + str(doc)
-        if type(self.renamed_input_fields) is list:
-            input_fields = self.renamed_input_fields
-        else:
-            input_fields = [self.renamed_input_fields]
-        if any([(x in doc) for x in input_fields]):
-            input_arr = []
-            for f in input_fields:
-                if f in doc:
-                    if type(doc[f]) is str:
-                        input_arr.append(doc[f])
-                    else:
-                        for xx in doc[f]:
-                            input_arr.append(xx)
+        cities = []
+        states = []
+        if 'city' in doc:
+            if type(doc['city']) is str:
+                cities.append(doc['city'])
+            else:
+                for xx in doc['city']:
+                    cities.append(xx)
+
+        if 'state' in doc:
+            if type(doc['state']) is str:
+                states.append(doc['state'])
+            else:
+                for xx in doc['state']:
+                    states.append(xx)
             # print(input_arr)
-            return self.pred_country(input_arr)
-        else:
-            return None
+        return self.pred_country(cities, states)
 
 
 # if __name__ == '__main__':
